@@ -1,0 +1,22 @@
+Arithmetic {
+  Expr
+    = AddExpr
+
+  AddExpr
+    = AddExpr "+" MulExpr  -- plus
+    | AddExpr "-" MulExpr  -- minus
+    | MulExpr
+
+  MulExpr
+    = MulExpr "*" PrimaryExpr  -- times
+    | MulExpr "/" PrimaryExpr  -- divide
+    | PrimaryExpr
+
+  PrimaryExpr
+    = "(" Expr ")"  -- parens
+    | number
+
+  number
+    = digit+
+}
+
