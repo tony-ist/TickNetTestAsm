@@ -1,0 +1,8 @@
+send 4 1 // send start command
+check 5 2 // check that online bit is on
+send 0 42 // send empty packet to address 42
+check 5 3 // check that online and more packets bits are on
+send 4 4 // send next packet command
+check 6 0 // check that length is 0
+check 3 0 // check data is empty
+send 4 2 // turn node offline

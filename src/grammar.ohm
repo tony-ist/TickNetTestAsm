@@ -1,22 +1,27 @@
-Arithmetic {
-  Expr
-    = AddExpr
+TNS {
+    program = programLine*
 
-  AddExpr
-    = AddExpr "+" MulExpr  -- plus
-    | AddExpr "-" MulExpr  -- minus
-    | MulExpr
+    programLine = emptyLine | commentLine | instructionLine
 
-  MulExpr
-    = MulExpr "*" PrimaryExpr  -- times
-    | MulExpr "/" PrimaryExpr  -- divide
-    | PrimaryExpr
+    instructionLine = inlineSpace* instruction inlineSpace* (inlineComment)? newline
 
-  PrimaryExpr
-    = "(" Expr ")"  -- parens
-    | number
+    commentLine = inlineSpace* comment newline
 
-  number
-    = digit+
+    emptyLine = inlineSpace* newline
+
+    inlineComment = comment
+
+    comment = "//" (~newline any)*
+
+    instruction = (label space+)? mnemonic " " immediate " " immediate
+
+    immediate = "-"? digit+
+
+    mnemonic = letter+
+
+    sep = inlineSpace+
+
+    newline = "\n"
+
+    inlineSpace = ~newline space
 }
-
