@@ -6,3 +6,4 @@ send 4 4 // send next packet command
 check 6 0 // check that length is 0
 check 3 0 // check data is empty
 send 4 2 // turn node offline
+halt
