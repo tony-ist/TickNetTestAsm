@@ -13,7 +13,7 @@ TNS {
 
     comment = "//" (~newline any)*
 
-    instruction = (label space+)? mnemonic " " immediate " " immediate
+    instruction = mnemonic " " immediate " " immediate
 
     immediate = "-"? digit+
 
