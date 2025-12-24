@@ -1,9 +1,57 @@
+// 12-bit ROM encodes current operation
+// 
+// 0
+// 0
+// 1
+// 0
+// 1
+// 0
+// 1
+// 0 - 8 bit data value
+// 0
+// 1
+// 0 - 3 bits choose one of 7 ports of the TN Node (values 0-6)
+//     0 - recipient input
+//     1 - sender output
+//     2 - data input
+//     3 - data output
+//     4 - cmd input
+//       1 - start
+//       2 - terminate
+//       4 - next packet
+//     5 - status output
+//       bit 0 - more packets?
+//       bit 1 - on?
+//     6 - length output
+// 1 - 1 bit encodes whether its write to node operation or check value outputted by the node (0 = write, 1 = check)
+
 send 4 1 // send start command
-check 5 2 // check that online bit is on
-send 0 42 // send empty packet to address 42
+check 5 2 // check that only online bit is on
+
+// Test empty packet
+// send 0 42 // send empty packet to address 42
+// nop // wait for packet to arrive
+// nop
+// check 5 3 // check that online and more packets bits are on
+// send 4 4 // send next packet command
+// check 5 2 // check that only online bit is on
+// check 1 42 // check that sender's address is 42
+// check 6 0 // check that length is 0
+// check 3 0 // check data is empty
+
+// Test 1 data byte packet
+send 2 255 // input 255 as a date byte
+send 0 42 // send packet to address 42 (self)
+nop // wait for packet to arrive
+nop
 check 5 3 // check that online and more packets bits are on
 send 4 4 // send next packet command
+check 5 2 // check that only online bit is on
+check 1 42 // check that sender's address is 42
+check 6 1 // check that length is 1
+send 3 0 // ask for next data byte
+check 3 255 // check that data byte is 255
 check 6 0 // check that length is 0
-check 3 0 // check data is empty
+
 send 4 2 // turn node offline
 halt

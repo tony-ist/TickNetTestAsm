@@ -13,6 +13,9 @@ const simpleTns = fs.readFileSync(
   'utf-8'
 );
 
+const HALT_INSTRUCTION = 0b0000_0000_1110;
+const NOP_INSTRUCTION = 0b0000_0001_1110;
+
 const semantics = grammar.createSemantics();
 
 semantics.addOperation('assemble', {
@@ -21,14 +24,20 @@ semantics.addOperation('assemble', {
   instructionLine: (_inlineSpace1, instruction, _inlineSpace2, _inlineComment, _newline) => instruction.assemble(),
   instruction: (mnemonic, _space1, port, _space2, data) => {
     if (mnemonic.sourceString === 'halt') {
-      return 0;
+      return HALT_INSTRUCTION;
+    }
+
+    if (mnemonic.sourceString === 'nop') {
+      return NOP_INSTRUCTION;
     }
 
     const checkBit = mnemonic.sourceString === 'check' ? 1 : 0;
-    const portInt = parseInt(port.sourceString);
-    const dataInt = parseInt(data.sourceString);
+    const portInt = parseInt(port.children[0].sourceString);
+    const dataInt = parseInt(data.children[0].sourceString);
+
     return checkBit + (portInt << 1) + (dataInt << 4);
   },
+
   _iter: (...children) => children.map(c => c.assemble()).filter(x => x !== null),
 });
 
@@ -41,8 +50,8 @@ if (matchResult.failed()) {
 
 const assembled = semantics(matchResult).assemble();
 console.log(assembled);
-console.log(assembled.map((x: number) => padWithZeros(x.toString(2), 12)).join(' '));
-console.log(assembled.map((x: number) => padWithZeros(x.toString(16).toUpperCase(), 4)).join(' '));
+console.log(assembled.map((x: number) => padWithZeros(x.toString(2), 12)).join('\n'));
+console.log(assembled.map((x: number) => padWithZeros(x.toString(16).toUpperCase(), 3)).join(' '));
 
 function padWithZeros(value: string, length: number) {
   return value.padStart(length, '0');
