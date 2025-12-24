@@ -12,6 +12,10 @@ const simpleTns = fs.readFileSync(
   path.join(__dirname, 'programs', 'simple.tns'),
   'utf-8'
 );
+const fullTns = fs.readFileSync(
+  path.join(__dirname, 'programs', 'full.tns'),
+  'utf-8'
+);
 
 const HALT_INSTRUCTION = 0b0000_0000_1110;
 const NOP_INSTRUCTION = 0b0000_0001_1110;
@@ -37,11 +41,13 @@ semantics.addOperation('assemble', {
 
     return checkBit + (portInt << 1) + (dataInt << 4);
   },
+  commentLine: (_inlineSpace1, _comment, _newline) => null,
+  emptyLine: (_inlineSpace1, _newline) => null,
 
   _iter: (...children) => children.map(c => c.assemble()).filter(x => x !== null),
 });
 
-const matchResult = grammar.match(simpleTns);
+const matchResult = grammar.match(fullTns);
 
 if (matchResult.failed()) {
   console.error(matchResult.message);
