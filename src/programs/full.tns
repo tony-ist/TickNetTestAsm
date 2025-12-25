@@ -49,8 +49,9 @@ send 4 4 // send next packet command
 check 5 2 // check that only online bit is on
 check 1 42 // check that sender's address is 42
 check 6 1 // check that length is 1
-send 3 0 // ask for next data byte
 check 3 255 // check that data byte is 255
+send 3 0 // ask for next data byte
+check 3 0 // check that data is 0
 check 6 0 // check that length is 0
 
 send 4 2 // turn node offline
